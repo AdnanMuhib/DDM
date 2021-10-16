@@ -23,6 +23,11 @@ class NavBar extends Component {
             <span>Register Product</span>
             <Link to="/register" />
           </Menu.Item>
+          <Menu.Item key="4" className="menu-button">
+            <Icon type="login" />
+            <span>Register (New)</span>
+            <Link to="/register-new" />
+          </Menu.Item>
 
           <Menu.Item key="3" className="menu-button">
             <Icon type="search" />

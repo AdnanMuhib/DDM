@@ -8,6 +8,7 @@ import { Route, Switch } from "react-router-dom";
 import Home from "./Home";
 import Order from "./Order";
 import QueryProduct from "./QueryProduct";
+import { NewRegistrationForm } from "./RegisterFormNew";
 import RegistrationForm from "./RegistrationForm";
 
 class Main extends React.Component {
@@ -17,6 +18,7 @@ class Main extends React.Component {
         <Switch>
           <Route exact path="/" component={Home} />
           <Route path="/register" component={RegistrationForm} />
+          <Route exact path="/register-new" component={NewRegistrationForm} />
           <Route path="/search" component={QueryProduct} />
           <Route path="/order" component={Order} />
           <Route component={Home} />
