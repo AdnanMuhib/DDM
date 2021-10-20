@@ -34,6 +34,11 @@ class NavBar extends Component {
             <span>Search</span>
             <Link to="/search" />
           </Menu.Item>
+          <Menu.Item key="5" className="menu-button">
+            <Icon type="search" />
+            <span>Search (New)</span>
+            <Link to="/search-new" />
+          </Menu.Item>
         </Menu>
       </div>
     );
