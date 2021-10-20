@@ -11,20 +11,17 @@ import web3 from "./web3";
 
 const Option = Select.Option;
 const FormItem = Form.Item;
+const { TextArea } = Input;
 
 class RegistrationForm extends Component {
   state = {
     // display
+    seller_name: "",
     description: "",
     price: "",
-    longitude: "",
-    latitude: "",
-    seller_credential: "",
-    ip_address: "",
     public_address: "",
-    data_unit: "",
-    seller: "",
-    peripheral_sensor: "",
+    dataset_name: "",
+    seller_credentials: "",
 
     // ipfs part
     ipfsHash: null,
@@ -48,7 +45,8 @@ class RegistrationForm extends Component {
   handleBtnClick = (e) => {
     this.sendToIpfs();
     if (this.state.ipfsHash !== "") {
-      alert("Register Success!");
+      console.log("Dataset Registered to IPFS Successfully!");
+      // alert("Dataset Registered Successfully!");
     }
   };
 
@@ -60,26 +58,27 @@ class RegistrationForm extends Component {
   convertToBuffer = async () => {
     // file is converted to a buffer for upload to IPFS
     const obj = {
-      Seller: this.state.seller,
-      Peripheral_Sensor: this.state.peripheral_sensor,
-      Product_Description: this.state.description,
-      Longitude: this.state.longitude,
-      Latitude: this.state.latitude,
-      Price_per_Data_Unit_USD: this.state.price,
-      Data_Unit: this.state.data_unit,
-      IP_Address: this.state.ip_address,
-      Public_Address: this.state.public_address,
-      Seller_Credentials: this.state.seller_credential,
+      seller_name: this.state.seller_name,
+      dataset_name: this.state.dataset_name,
+      product_description: this.state.description,
+      price_per_unit_usd: this.state.price,
+      public_address: this.state.public_address,
+      seller_credentials: this.state.seller_credentials,
     };
-
     const buffer = await Buffer.from(JSON.stringify(obj));
     this.setState({ buffer });
   };
 
   onSubmit = async () => {
     // bring in user's metamask account address
+    // const account = web3.eth.accounts.privateKeyToAccount(
+    //   "0xC89ADA337DCDD9D9D092D582104064554DDC3A835B0D164B82E304F0DFC5F0FC"
+    // );
+    // const account = web3.eth.accounts.privateKeyToAccount(
+    //   "691e92fb03628b6cd1c6a40e4a75ccfceaa62777fd73135f503172ce10789304"
+    // );
     const account = web3.eth.accounts.privateKeyToAccount(
-      "0xC89ADA337DCDD9D9D092D582104064554DDC3A835B0D164B82E304F0DFC5F0FC"
+      "0xDAe0cba5097939CeAB4C0dfb608caA66F8980a87"
     );
     web3.eth.accounts.wallet.add(account);
     web3.eth.defaultAccount = account.address;
@@ -103,9 +102,11 @@ class RegistrationForm extends Component {
         .send(
           {
             from: account.address,
+            gasPrice: 10000000000,
             gas: 1000000,
           },
           (error, transactionHash) => {
+            console.error(error);
             console.log(transactionHash);
             this.setState({ transactionHash });
           }
@@ -114,7 +115,6 @@ class RegistrationForm extends Component {
   };
 
   handleInputChange = (input, e) => {
-    debugger;
     const value = e.target.value;
     this.setState({
       [input]: value,
@@ -147,73 +147,49 @@ class RegistrationForm extends Component {
 
     const description = "description";
     const price = "price";
-    const longitude = "longitude";
-    const latitude = "latitude";
-    const ip_address = "ip_address";
     const public_address = "public_address";
-    const seller = "seller";
-    const peripheral_sensor = "peripheral_sensor";
+    const seller_name = "seller_name";
+    const dataset_name = "dataset_name";
 
     return (
       <Form className="register-form">
         <div className="left-form">
+          <FormItem label="Dataset Name" {...formItemLayout}>
+            <Input
+              value={this.state.dataset_name}
+              onChange={(e) => this.handleInputChange(dataset_name, e)}
+            />
+          </FormItem>
+          <FormItem label="Dataset Address" {...formItemLayout}>
+            <Input
+              value={this.state.public_address}
+              onChange={(e) => this.handleInputChange(public_address, e)}
+            />
+          </FormItem>
+          <FormItem label="Description" {...formItemLayout}>
+            <TextArea
+              value={this.state.description}
+              onChange={(e) => this.handleInputChange(description, e)}
+            />
+          </FormItem>
+        </div>
+        <div className="right-form">
           <FormItem label="Type" {...formItemLayout}>
             <Select defaultValue="SDPP" style={{ width: 150 }}>
               <Option value="others">OTHER</Option>
               <Option value="SDPP">SDPP</Option>
             </Select>
           </FormItem>
-          <FormItem label="Seller" {...formItemLayout}>
-            <Input
-              value={this.state.seller}
-              onChange={(e) => this.handleInputChange(seller, e)}
-            />
-          </FormItem>
-
-          <FormItem label="Peripheral Sensor" {...formItemLayout}>
-            <Input
-              value={this.state.peripheral_sensor}
-              onChange={(e) => this.handleInputChange(peripheral_sensor, e)}
-            />
-          </FormItem>
-          <FormItem label="Description" {...formItemLayout}>
-            <Input
-              value={this.state.description}
-              onChange={(e) => this.handleInputChange(description, e)}
-            />
-          </FormItem>
-          <FormItem label="Longitude" {...formItemLayout}>
-            <Input
-              value={this.state.longitude}
-              onChange={(e) => this.handleInputChange(longitude, e)}
-            />
-          </FormItem>
-        </div>
-        <div className="right-form">
-          <FormItem label="Latitude" {...formItemLayout}>
-            <Input
-              value={this.state.latitude}
-              onChange={(e) => this.handleInputChange(latitude, e)}
-            />
-          </FormItem>
-
           <FormItem label="Price in USD" {...formItemLayout}>
             <Input
               value={this.state.price}
               onChange={(e) => this.handleInputChange(price, e)}
             />
           </FormItem>
-          <FormItem label="IP Address" {...formItemLayout}>
+          <FormItem label="Seller Name:" {...formItemLayout}>
             <Input
-              value={this.state.ip_address}
-              onChange={(e) => this.handleInputChange(ip_address, e)}
-            />
-          </FormItem>
-
-          <FormItem label="Public Address" {...formItemLayout}>
-            <Input
-              value={this.state.public_address}
-              onChange={(e) => this.handleInputChange(public_address, e)}
+              value={this.state.seller_name}
+              onChange={(e) => this.handleInputChange(seller_name, e)}
             />
           </FormItem>
         </div>
